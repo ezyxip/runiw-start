@@ -18,10 +18,12 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collection;
+import java.util.logging.Logger;
 
 @Route("nav")
 @PageTitle("Навигация")
@@ -29,9 +31,11 @@ import java.util.Collection;
 public class NavCatalogePage extends AppLayout {
     protected String userName;
 
+    protected Logger logger = Logger.getLogger(this.getClass().getName());
 
 
-    NavCatalogePage(){
+
+    NavCatalogePage(@Autowired RoleDict roleDict){
         userName = SecurityContextHolder.getContext().getAuthentication().getName();
         Avatar avatar = new Avatar(userName);
         avatar.getStyle().set("margin-left", "1.5em");
@@ -58,9 +62,14 @@ public class NavCatalogePage extends AppLayout {
         Div roleContainer = new Div();
 
         Collection<GrantedAuthority> roles= (Collection<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        RoleDict roleDict = new RoleDict();
         for(GrantedAuthority i : roles){
-            roleContainer.add(new RoleCard(roleDict.get(i.getAuthority())));
+            logger.info(roleDict.get(i.getAuthority()).getValue1() + " | " + roleDict.get(i.getAuthority()).getValue2());
+            roleContainer.add(new RoleCard(
+                    roleDict.get(i.getAuthority()).getValue1(),
+                    e -> UI.getCurrent().getPage().setLocation(roleDict.get(i.getAuthority()).getValue2())
+            ));
+
+
         }
 
         roleContainer.getStyle()
