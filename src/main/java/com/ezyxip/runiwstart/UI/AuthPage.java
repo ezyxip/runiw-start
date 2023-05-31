@@ -1,5 +1,6 @@
 package com.ezyxip.runiwstart.UI;
 
+import com.ezyxip.runiwstart.system.UriCacheStore;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
@@ -11,7 +12,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinServlet;
+import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.flow.server.VaadinServletResponse;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,8 +26,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +37,9 @@ import java.util.logging.Logger;
 @AnonymousAllowed
 public class AuthPage extends VerticalLayout {
 
+    SavedRequestAwareAuthenticationSuccessHandler handler = new SavedRequestAwareAuthenticationSuccessHandler(){{
+       setDefaultTargetUrl("/");
+    }};
     @Autowired
     DaoAuthenticationProvider authenticationManager;
 
@@ -48,7 +58,13 @@ public class AuthPage extends VerticalLayout {
                 if(auth()){
                     User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                     logger.info("Вход выполнен успешно. Пользователь: " + user.getUsername());
-                    UI.getCurrent().navigate("/nav");
+                    if(VaadinServletRequest.getCurrent().getSession().getAttribute("uriCache") != null) {
+                        UriCacheStore store = (UriCacheStore) VaadinServletRequest.getCurrent().getSession().getAttribute("uriCache");
+                        logger.info(store.toString());
+                        UI.getCurrent().navigate(store.getCache().firstElement());
+                    }else{
+                        UI.getCurrent().navigate("/");
+                    }
                 } else {
                     logger.info("Неверные логин и пароль. Логин/пароль:" + textField.getValue() + "/" + passwordField.getValue());
                     onBadAuth();

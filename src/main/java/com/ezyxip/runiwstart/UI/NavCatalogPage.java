@@ -7,16 +7,13 @@ import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,17 +22,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-@Route("nav")
+@Route("/nav")
 @PageTitle("Навигация")
 @PermitAll
-public class NavCatalogePage extends AppLayout {
+public class NavCatalogPage extends AppLayout {
     protected String userName;
 
     protected Logger logger = Logger.getLogger(this.getClass().getName());
 
 
 
-    NavCatalogePage(@Autowired RoleDict roleDict){
+    NavCatalogPage(@Autowired RoleDict roleDict){
         userName = SecurityContextHolder.getContext().getAuthentication().getName();
         Avatar avatar = new Avatar(userName);
         avatar.getStyle().set("margin-left", "1.5em");
@@ -49,7 +46,7 @@ public class NavCatalogePage extends AppLayout {
                 (a)-> {
                     SecurityContextHolder.clearContext();
                     VaadinSession.getCurrent().getSession().invalidate();
-                    UI.getCurrent().navigate("/");
+                    UI.getCurrent().getPage().setLocation("/");
                 });
         exitButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
         exitButton.getStyle().set("margin-left", "1.5em");
@@ -63,7 +60,6 @@ public class NavCatalogePage extends AppLayout {
 
         Collection<GrantedAuthority> roles= (Collection<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         for(GrantedAuthority i : roles){
-            logger.info(roleDict.get(i.getAuthority()).getValue1() + " | " + roleDict.get(i.getAuthority()).getValue2());
             roleContainer.add(new RoleCard(
                     roleDict.get(i.getAuthority()).getValue1(),
                     e -> UI.getCurrent().getPage().setLocation(roleDict.get(i.getAuthority()).getValue2())

@@ -40,7 +40,7 @@ public class IndexPage extends AppLayout {
         button.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
             @Override
             public void onComponentEvent(ClickEvent<Button> buttonClickEvent) {
-                UI.getCurrent().navigate("/nav");
+                UI.getCurrent().getPage().setLocation("/nav");
             }
         });
         content.add(button);
