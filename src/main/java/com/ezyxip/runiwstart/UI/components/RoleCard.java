@@ -1,4 +1,4 @@
-package com.ezyxip.runiwstart.UI;
+package com.ezyxip.runiwstart.UI.components;
 
 
 import com.vaadin.flow.component.ClickEvent;
@@ -12,8 +12,6 @@ public class RoleCard extends Button {
     public RoleCard(String text, ComponentEventListener<ClickEvent<Button>> click){
         setText(text);
         addClickListener(click);
-//        getStyle().set("min-width", "10em");
-//        getStyle().set("min-height", "4em");
         getStyle().set("margin", "1em");
         addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     }

@@ -1,5 +1,6 @@
 package com.ezyxip.runiwstart.UI;
 
+import com.ezyxip.runiwstart.UI.components.RoleCard;
 import com.ezyxip.runiwstart.services.RoleDict;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;

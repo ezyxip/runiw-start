@@ -1,4 +1,4 @@
-package com.ezyxip.runiwstart.UI.admin.ads;
+package com.ezyxip.runiwstart.UI.admin;
 
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;

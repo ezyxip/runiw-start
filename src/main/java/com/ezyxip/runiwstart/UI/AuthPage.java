@@ -11,6 +11,7 @@ import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinServlet;
 import com.vaadin.flow.server.VaadinServletRequest;
@@ -35,6 +36,7 @@ import java.util.logging.Logger;
 
 @Route("/auth")
 @AnonymousAllowed
+@PageTitle("Авторизация")
 public class AuthPage extends VerticalLayout {
 
     SavedRequestAwareAuthenticationSuccessHandler handler = new SavedRequestAwareAuthenticationSuccessHandler(){{
