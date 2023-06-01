@@ -1,9 +1,8 @@
 package com.ezyxip.runiwstart.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -18,6 +17,10 @@ public class UserEntity {
     @Column(nullable = false, columnDefinition = "tinyint(1)")
     boolean enabled;
 
+    @Transient
+    List<AuthorityEntity> authorities;
+
+
     public UserEntity() {
     }
 
@@ -31,12 +34,32 @@ public class UserEntity {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public List<AuthorityEntity> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(List<AuthorityEntity> authorities) {
+        this.authorities = authorities;
     }
 
     @Override

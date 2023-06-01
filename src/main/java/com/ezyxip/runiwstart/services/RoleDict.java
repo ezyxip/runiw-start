@@ -14,5 +14,6 @@ public class RoleDict extends HashMap<String, RoleStruct> {
         put("ROLE_ANALYST", new RoleStruct("Аналитик", "/spaces/analyst"));
         put("ROLE_LOADER", new RoleStruct("Грузчик", "/spaces/loader"));
         put("ROLE_MANAGER", new RoleStruct("Менеджер", "/spaces/manager"));
+        put("ROLE_AUTHSERVICE", new RoleStruct("М", "/"));
     }
 }

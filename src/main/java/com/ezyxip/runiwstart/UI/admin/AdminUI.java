@@ -1,6 +1,7 @@
 package com.ezyxip.runiwstart.UI.admin;
 
 import com.ezyxip.runiwstart.UI.components.ExtendTab;
+import com.ezyxip.runiwstart.data.AuthorityRepository;
 import com.ezyxip.runiwstart.data.UserRepository;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
@@ -26,6 +27,9 @@ public class AdminUI extends AppLayout {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    AuthorityRepository authorityRepository;
+
     AdminUI(){
         Label title = new Label("Администратор");
         title.getStyle().set("font-size", "var(--lumo-font-size-l)")
@@ -44,7 +48,7 @@ public class AdminUI extends AppLayout {
         ExtendTab users = new ExtendTab();
         users.add(new Icon(VaadinIcon.USERS){{getStyle().set("margin", "0.5em");}});
         users.add("Пользователи");
-        users.setCallback(()-> new UsersScreen(userRepository));
+        users.setCallback(()-> new UsersScreen(userRepository, authorityRepository));
 
         ExtendTab warehouseModel = new ExtendTab();
         warehouseModel.add(new Icon(VaadinIcon.HOME_O){{getStyle().set("margin", "0.5em");}});
