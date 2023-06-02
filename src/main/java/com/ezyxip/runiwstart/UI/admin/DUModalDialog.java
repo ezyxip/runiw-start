@@ -1,11 +1,10 @@
 package com.ezyxip.runiwstart.UI.admin;
 
-import com.ezyxip.runiwstart.data.AuthorityRepository;
-import com.ezyxip.runiwstart.data.UserRepository;
+import com.ezyxip.runiwstart.repositories.AuthorityRepository;
+import com.ezyxip.runiwstart.repositories.UserRepository;
 import com.ezyxip.runiwstart.entities.AuthorityEntity;
 import com.ezyxip.runiwstart.entities.AuthorityEntityId;
 import com.ezyxip.runiwstart.entities.UserEntity;
-import com.ezyxip.runiwstart.services.RoleDict;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
@@ -17,10 +16,7 @@ import com.vaadin.flow.component.textfield.TextField;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class DUModalDialog extends Dialog {
     static Logger logger = Logger.getLogger(DUModalDialog.class.getName());

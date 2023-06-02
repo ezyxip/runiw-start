@@ -1,7 +1,7 @@
 package com.ezyxip.runiwstart.UI.admin;
 
-import com.ezyxip.runiwstart.data.AuthorityRepository;
-import com.ezyxip.runiwstart.data.UserRepository;
+import com.ezyxip.runiwstart.repositories.AuthorityRepository;
+import com.ezyxip.runiwstart.repositories.UserRepository;
 import com.ezyxip.runiwstart.entities.AuthorityEntity;
 import com.ezyxip.runiwstart.entities.UserEntity;
 import com.ezyxip.runiwstart.services.RoleDict;

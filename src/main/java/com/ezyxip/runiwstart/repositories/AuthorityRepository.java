@@ -1,4 +1,4 @@
-package com.ezyxip.runiwstart.data;
+package com.ezyxip.runiwstart.repositories;
 
 import com.ezyxip.runiwstart.entities.AuthorityEntity;
 import org.springframework.data.repository.CrudRepository;

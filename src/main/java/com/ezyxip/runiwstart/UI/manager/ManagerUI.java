@@ -1,8 +1,10 @@
-package com.ezyxip.runiwstart.UI.admin;
+package com.ezyxip.runiwstart.UI.manager;
 
+import com.ezyxip.runiwstart.UI.admin.AdsScreen;
+import com.ezyxip.runiwstart.UI.admin.UsersScreen;
 import com.ezyxip.runiwstart.UI.components.ExtendTab;
-import com.ezyxip.runiwstart.repositories.AuthorityRepository;
-import com.ezyxip.runiwstart.repositories.UserRepository;
+import com.ezyxip.runiwstart.entities.CellEntity;
+import com.ezyxip.runiwstart.repositories.CellRepository;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -17,20 +19,23 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.logging.Logger;
 
-@Route("/spaces/admin")
-@RolesAllowed("ROLE_ADMIN")
-@PageTitle("Панель администратора")
-public class AdminUI extends AppLayout {
+@Route("/spaces/manager")
+@RolesAllowed("ROLE_MANAGER")
+@PageTitle("Панель менеджера")
+public class ManagerUI extends AppLayout {
+    static Logger logger = Logger.getLogger(ManagerUI.class.getName());
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    AuthorityRepository authorityRepository;
-
-    public AdminUI(){
-        Label title = new Label("Администратор");
+    ManagerUI(
+            @Autowired
+            CellRepository repository
+    ){
+        Iterable<CellEntity> cells = repository.findAll();
+        for(CellEntity i : cells){
+            logger.info(i.toString());
+        }
+        Label title = new Label("Менеджер");
         title.getStyle().set("font-size", "var(--lumo-font-size-l)")
                 .set("margin", "0");
         addToNavbar(new DrawerToggle(), title);
@@ -45,14 +50,14 @@ public class AdminUI extends AppLayout {
         generalInfo.setCallback(()-> new Label("Ну, в общем, склад работает... а может и нет"));
 
         ExtendTab users = new ExtendTab();
-        users.add(new Icon(VaadinIcon.USERS){{getStyle().set("margin", "0.5em");}});
-        users.add("Пользователи");
-        users.setCallback(()-> new UsersScreen(userRepository, authorityRepository));
+        users.add(new Icon(VaadinIcon.COMPILE){{getStyle().set("margin", "0.5em");}});
+        users.add("Структура склада");
+        users.setCallback(()-> new Label("Структура склада"));
 
         ExtendTab warehouseModel = new ExtendTab();
-        warehouseModel.add(new Icon(VaadinIcon.HOME_O){{getStyle().set("margin", "0.5em");}});
-        warehouseModel.add("Модель склада");
-        warehouseModel.setCallback(()-> new Label("Загрузка модели склада"));
+        warehouseModel.add(new Icon(VaadinIcon.CUBES){{getStyle().set("margin", "0.5em");}});
+        warehouseModel.add("Груз");
+        warehouseModel.setCallback(()-> new Label("Просмотр груза"));
 
         ExtendTab warnings = new ExtendTab();
         warnings.add(new Icon(VaadinIcon.ENVELOPE_O){{getStyle().set("margin", "0.5em");}});
