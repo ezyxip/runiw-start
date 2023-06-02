@@ -48,7 +48,7 @@ public class AuthorityEntityId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AuthorityEntityId that = (AuthorityEntityId) o;
-        return Objects.equals(getUsername(), that.getUsername()) && Objects.equals(getAuthority(), that.getAuthority());
+        return /*Objects.equals(getUsername(), that.getUsername()) &&*/ Objects.equals(getAuthority(), that.getAuthority());
     }
 
     @Override

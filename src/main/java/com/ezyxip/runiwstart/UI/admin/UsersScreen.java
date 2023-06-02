@@ -7,11 +7,13 @@ import com.ezyxip.runiwstart.entities.UserEntity;
 import com.ezyxip.runiwstart.services.RoleDict;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 
 import java.util.ArrayList;
@@ -57,14 +59,23 @@ public class UsersScreen extends AppLayout {
                 (btn, user) ->{
                     btn.setIcon(new Icon(VaadinIcon.EDIT));
                     btn.addClickListener((event ->{
-                        new DUModalDialog(user, authorityRepository).open();
+                        new DUModalDialog(user, authorityRepository, userRepository).open();
                     }));
 
                 }
         ));
         grid.setAllRowsVisible(true);
         grid.setItems(users);
-        setContent(grid);
+
+        Button createUser = new Button("Создать нового пользователя");
+        createUser.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        createUser.addClickListener(buttonClickEvent -> {
+            new CreateUserDialog(authorityRepository, userRepository).open();
+        });
+
+        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.add(grid, createUser);
+        setContent(verticalLayout);
 
     }
 }

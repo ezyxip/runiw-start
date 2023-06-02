@@ -15,7 +15,7 @@ public class UserEntity {
     String password;
 
     @Column(nullable = false, columnDefinition = "tinyint(1)")
-    boolean enabled;
+    boolean enabled = true;
 
     @Transient
     List<AuthorityEntity> authorities;
@@ -68,6 +68,7 @@ public class UserEntity {
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", enabled=" + enabled +
+                ", authorities=" + authorities +
                 '}';
     }
 }

@@ -14,6 +14,30 @@ public class AuthorityEntity {
    @EmbeddedId
    AuthorityEntityId id;
 
+    public AuthorityEntity() {
+        id = new AuthorityEntityId("", "");
+    }
+
+    public AuthorityEntity(String username, String authority) {
+        id = new AuthorityEntityId(username, authority);
+    }
+
+    public void setUserName(String username){
+        id.setUsername(username);
+    }
+
+    public void setAuthority(String authority){
+        id.setAuthority(authority);
+    }
+
+    public String getUsername(){
+        return id.getUsername();
+    }
+
+    public String getAuthority(){
+        return id.getAuthority();
+    }
+
     public AuthorityEntityId getId() {
         return id;
     }
@@ -24,15 +48,17 @@ public class AuthorityEntity {
 
     @Override
     public String toString() {
-        return new RoleDict().get(getId().getAuthority()).getValue1();
+        String res = new RoleDict().get(getId().getAuthority()).getValue1();
+        return res != null ? res : getId().getAuthority();
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AuthorityEntity that = (AuthorityEntity) o;
-        return Objects.equals(getId(), that.getId());
+        if (o == null /*|| getClass() != o.getClass()*/) return false;
+        AuthorityEntity authority = (AuthorityEntity) o;
+        return Objects.equals(getId(), authority.getId());
     }
 
     @Override

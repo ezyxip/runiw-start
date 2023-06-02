@@ -5,7 +5,6 @@ import com.ezyxip.runiwstart.data.UserRepository;
 import com.ezyxip.runiwstart.entities.AuthorityEntity;
 import com.ezyxip.runiwstart.entities.AuthorityEntityId;
 import com.ezyxip.runiwstart.entities.UserEntity;
-import com.ezyxip.runiwstart.services.RoleDict;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
@@ -17,30 +16,16 @@ import com.vaadin.flow.component.textfield.TextField;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class DUModalDialog extends Dialog {
-    static Logger logger = Logger.getLogger(DUModalDialog.class.getName());
+public class CreateUserDialog extends Dialog {
+    static Logger logger = Logger.getLogger(CreateUserDialog.class.getName());
     TextField username = new TextField("Имя пользователя");
     TextField password = new TextField("Пароль пользователя");
     MultiSelectComboBox<AuthorityEntity> roleBox = new MultiSelectComboBox<>("Роли");
-    public DUModalDialog(UserEntity user, AuthorityRepository authRepository, UserRepository userRepository){
-//        List<String> authorities = new ArrayList<>();
-//        StreamSupport.stream(authRepository.findAll().spliterator(), false)
-//                .forEach(authorityEntity -> authorities.add(authorityEntity.getId().getAuthority()));
-////        authorities = authorities.stream().distinct().collect(Collectors.toList());
-//        List<AuthorityEntity> finalAuthorities = new ArrayList<>();
-//        authorities.stream()
-//                .distinct()
-//                .forEach(a -> {
-//                    AuthorityEntity authority = new AuthorityEntity();
-//                    authority.setId(new AuthorityEntityId("", a));
-//                    finalAuthorities.add(authority);
-//                });
 
+    public CreateUserDialog(AuthorityRepository authRepository, UserRepository userRepository){
         List<AuthorityEntity> finalAuthorities = new ArrayList<>();
         finalAuthorities.add(new AuthorityEntity("", "ROLE_ADMIN"));
         finalAuthorities.add(new AuthorityEntity("", "ROLE_ANALYST"));
@@ -57,56 +42,32 @@ public class DUModalDialog extends Dialog {
 
         getHeader().add(close);
 
-        username.setValue(user.getUsername());
         username.getStyle().set("min-width", "15em");
 
 
-        password.setValue(user.getPassword());
         password.getStyle().set("min-width", "15em");
 
         logger.info(finalAuthorities.toString());
         roleBox.setItems(finalAuthorities);
         roleBox.getStyle().set("min-width", "15em");
 
-
-
-        for(AuthorityEntity i : user.getAuthorities()){
-            for( AuthorityEntity j : finalAuthorities) {
-                if(i.equals(j)) roleBox.select(j);
-            }
-        }
-
         VerticalLayout layout = new VerticalLayout();
         layout.add(username, password, roleBox);
 
         add(layout);
 
-        Button updateButton = new Button("Изменить");
-        updateButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        updateButton.addClickListener(buttonClickEvent -> {
-            UserEntity upUser = getUserModel();
-            for(AuthorityEntity i : user.getAuthorities()){
-                authRepository.delete(i);
-            }
-            userRepository.delete(user);
-            userRepository.save(upUser);
-            for(AuthorityEntity i : upUser.getAuthorities()){
+        Button createUser = new Button("Создать");
+        createUser.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        createUser.addClickListener(buttonClickEvent -> {
+            UserEntity newUser = getUserModel();
+            userRepository.save(newUser);
+            for(AuthorityEntity i : newUser.getAuthorities()){
                 authRepository.save(i);
             }
             close();
         });
 
-        Button deleteButton = new Button("Удалить");
-        deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-        deleteButton.addClickListener(buttonClickEvent -> {
-            for(AuthorityEntity i : user.getAuthorities()){
-                authRepository.delete(i);
-            }
-            userRepository.delete(user);
-            close();
-        });
-
-        getFooter().add(updateButton, deleteButton);
+        getFooter().add(createUser);
 
     }
 
