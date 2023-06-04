@@ -69,7 +69,7 @@ public class CellEntity {
     public String toString() {
         return "CellEntity{" +
                 "id=" + id +
-                ", rack=" + rack_id +
+                ", rack=" + (rack_id != null) +
                 ", name='" + name + '\'' +
                 '}';
     }

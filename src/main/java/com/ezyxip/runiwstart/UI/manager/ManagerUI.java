@@ -3,8 +3,14 @@ package com.ezyxip.runiwstart.UI.manager;
 import com.ezyxip.runiwstart.UI.admin.AdsScreen;
 import com.ezyxip.runiwstart.UI.admin.UsersScreen;
 import com.ezyxip.runiwstart.UI.components.ExtendTab;
+import com.ezyxip.runiwstart.entities.CellConstraintEntity;
 import com.ezyxip.runiwstart.entities.CellEntity;
+import com.ezyxip.runiwstart.entities.RackConstraintEntity;
+import com.ezyxip.runiwstart.entities.RackEntity;
+import com.ezyxip.runiwstart.repositories.CellConstraintRepository;
 import com.ezyxip.runiwstart.repositories.CellRepository;
+import com.ezyxip.runiwstart.repositories.RackConstraintRepository;
+import com.ezyxip.runiwstart.repositories.RackRepository;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -27,14 +33,10 @@ import java.util.logging.Logger;
 public class ManagerUI extends AppLayout {
     static Logger logger = Logger.getLogger(ManagerUI.class.getName());
 
-    ManagerUI(
-            @Autowired
-            CellRepository repository
-    ){
-        Iterable<CellEntity> cells = repository.findAll();
-        for(CellEntity i : cells){
-            logger.info(i.toString());
-        }
+    CellRepository repository;
+
+    ManagerUI(@Autowired CellRepository repository){
+        this.repository = repository;
         Label title = new Label("Менеджер");
         title.getStyle().set("font-size", "var(--lumo-font-size-l)")
                 .set("margin", "0");
@@ -52,7 +54,7 @@ public class ManagerUI extends AppLayout {
         ExtendTab users = new ExtendTab();
         users.add(new Icon(VaadinIcon.COMPILE){{getStyle().set("margin", "0.5em");}});
         users.add("Структура склада");
-        users.setCallback(()-> new Label("Структура склада"));
+        users.setCallback(()-> new CellsScreen(repository));
 
         ExtendTab warehouseModel = new ExtendTab();
         warehouseModel.add(new Icon(VaadinIcon.CUBES){{getStyle().set("margin", "0.5em");}});

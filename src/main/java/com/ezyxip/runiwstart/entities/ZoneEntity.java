@@ -67,7 +67,7 @@ public class ZoneEntity {
     public String toString() {
         return "ZoneEntity{" +
                 "id=" + id +
-                ", racks=" + racks +
+                ", racks=" + (racks != null) +
                 ", name='" + name + '\'' +
                 '}';
     }

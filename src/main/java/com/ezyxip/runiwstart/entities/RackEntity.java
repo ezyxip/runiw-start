@@ -80,8 +80,8 @@ public class RackEntity {
     public String toString() {
         return "RackEntity{" +
                 "id=" + id +
-                ", cells=" + cells +
-                ", zone_id=" + zone_id +
+                ", cells=" + (cells != null) +
+                ", zone_id=" + (zone_id != null)+
                 ", name='" + name + '\'' +
                 '}';
     }
