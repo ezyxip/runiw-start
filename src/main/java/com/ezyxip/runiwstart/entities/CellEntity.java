@@ -2,6 +2,7 @@ package com.ezyxip.runiwstart.entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,6 +20,8 @@ public class CellEntity {
     @Column
     private String name;
 
+    @OneToMany(targetEntity = CellConstraintEntity.class, fetch = FetchType.EAGER, mappedBy = "cell")
+    private List<CellConstraintEntity> constraints;
     public CellEntity() {
     }
 
@@ -26,6 +29,14 @@ public class CellEntity {
         this.id = id;
         this.rack_id = rack;
         this.name = name;
+    }
+
+    public List<CellConstraintEntity> getConstraints() {
+        return constraints;
+    }
+
+    public void setConstraints(List<CellConstraintEntity> constraints) {
+        this.constraints = constraints;
     }
 
     public void setId(Long id) {

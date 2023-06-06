@@ -1,16 +1,9 @@
 package com.ezyxip.runiwstart.UI.manager;
 
 import com.ezyxip.runiwstart.UI.admin.AdsScreen;
-import com.ezyxip.runiwstart.UI.admin.UsersScreen;
 import com.ezyxip.runiwstart.UI.components.ExtendTab;
-import com.ezyxip.runiwstart.entities.CellConstraintEntity;
-import com.ezyxip.runiwstart.entities.CellEntity;
-import com.ezyxip.runiwstart.entities.RackConstraintEntity;
-import com.ezyxip.runiwstart.entities.RackEntity;
-import com.ezyxip.runiwstart.repositories.CellConstraintRepository;
+import com.ezyxip.runiwstart.repositories.AcceptanceRepository;
 import com.ezyxip.runiwstart.repositories.CellRepository;
-import com.ezyxip.runiwstart.repositories.RackConstraintRepository;
-import com.ezyxip.runiwstart.repositories.RackRepository;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -34,9 +27,14 @@ public class ManagerUI extends AppLayout {
     static Logger logger = Logger.getLogger(ManagerUI.class.getName());
 
     CellRepository repository;
+    AcceptanceRepository acceptanceRepository;
 
-    ManagerUI(@Autowired CellRepository repository){
+    ManagerUI(
+            @Autowired CellRepository repository,
+            @Autowired AcceptanceRepository acceptanceRepository
+            ){
         this.repository = repository;
+        this.acceptanceRepository = acceptanceRepository;
         Label title = new Label("Менеджер");
         title.getStyle().set("font-size", "var(--lumo-font-size-l)")
                 .set("margin", "0");
@@ -61,10 +59,15 @@ public class ManagerUI extends AppLayout {
         warehouseModel.add("Груз");
         warehouseModel.setCallback(()-> new Label("Просмотр груза"));
 
+        ExtendTab acceptance = new ExtendTab();
+        acceptance.add(new Icon(VaadinIcon.SIGN_IN){{getStyle().set("margin", "0.5em");}});
+        acceptance.add("Приёмка");
+        acceptance.setCallback(() -> new AcceptanceScreen(acceptanceRepository));
+
         ExtendTab warnings = new ExtendTab();
         warnings.add(new Icon(VaadinIcon.ENVELOPE_O){{getStyle().set("margin", "0.5em");}});
         warnings.add("Объявления");
-        warnings.setCallback(() -> new AdsScreen());
+        warnings.setCallback(AdsScreen::new);
 
         ExtendTab exit = new ExtendTab();
         exit.add(new Icon(VaadinIcon.ANGLE_DOUBLE_LEFT){{getStyle().set("margin", "0.5em");}});
@@ -75,7 +78,7 @@ public class ManagerUI extends AppLayout {
         });
 
 
-        Tabs res = new Tabs(generalInfo, users, warehouseModel, warnings, exit);
+        Tabs res = new Tabs(generalInfo, users, warehouseModel, acceptance, warnings, exit);
         res.setOrientation(Tabs.Orientation.VERTICAL);
         res.addSelectedChangeListener(
                 event -> {

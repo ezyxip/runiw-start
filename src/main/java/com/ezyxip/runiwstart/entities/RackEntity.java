@@ -21,6 +21,9 @@ public class RackEntity {
 
     private String name;
 
+    @OneToMany(targetEntity = RackConstraintEntity.class, fetch = FetchType.EAGER, mappedBy = "rack")
+    private List<RackConstraintEntity> constraints;
+
     public RackEntity() {
     }
 
@@ -29,6 +32,14 @@ public class RackEntity {
         this.cells = cells;
         this.zone_id = zone;
         this.name = name;
+    }
+
+    public List<RackConstraintEntity> getConstraints() {
+        return constraints;
+    }
+
+    public void setConstraints(List<RackConstraintEntity> constraints) {
+        this.constraints = constraints;
     }
 
     public void setId(Long id) {

@@ -3,13 +3,16 @@ package com.ezyxip.runiwstart.UI.manager;
 import com.ezyxip.runiwstart.entities.CellEntity;
 import com.ezyxip.runiwstart.repositories.CellRepository;
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.grid.ColumnPathRenderer;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.dataview.GridDataView;
 import com.vaadin.flow.component.grid.dataview.GridListDataView;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import org.springframework.util.StreamUtils;
 
@@ -28,9 +31,12 @@ public class CellsScreen extends AppLayout {
         Iterable<CellEntity> cells = repository.findAll();
         List<CellEntity> cellEntityList = StreamSupport.stream(cells.spliterator(), false).collect(Collectors.toList());
         grid.addColumn(CellEntity::getName).setHeader("Ячейка").setFooter(String.valueOf(cellEntityList.size())).setSortable(true);
-        grid.addColumn(cell -> {return cell.getRack_id().getName();}).setHeader("Стеллаж").setSortable(true);
+        grid.addColumn(cell -> cell.getRack_id().getName()).setHeader("Стеллаж").setSortable(true);
         grid.addColumn(cell -> cell.getRack_id().getZone_id().getName()).setHeader("Зона").setSortable(true);
 
+        grid.setItemDetailsRenderer(new ComponentRenderer<>(CellDetails::new, CellDetails::setCell));
+
+        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         GridListDataView<CellEntity> dataView = grid.setItems(cellEntityList);
 
         VerticalLayout layout = new VerticalLayout();

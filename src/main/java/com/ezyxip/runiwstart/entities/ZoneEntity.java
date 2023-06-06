@@ -17,6 +17,9 @@ public class ZoneEntity {
 
     private String name;
 
+    @OneToMany(targetEntity = ZoneConstraintEntity.class, fetch = FetchType.EAGER, mappedBy = "zone")
+    private List<ZoneConstraintEntity> constraints;
+
     public ZoneEntity() {
     }
 
@@ -24,6 +27,14 @@ public class ZoneEntity {
         this.id = id;
         this.racks = racks;
         this.name = name;
+    }
+
+    public List<ZoneConstraintEntity> getConstraints() {
+        return constraints;
+    }
+
+    public void setConstraints(List<ZoneConstraintEntity> constraints) {
+        this.constraints = constraints;
     }
 
     public void setId(Long id) {
