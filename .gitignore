@@ -33,3 +33,4 @@ build/
 ### VS Code ###
 .vscode/
 /start.bat
+/src/test/java/BasicTest.java
