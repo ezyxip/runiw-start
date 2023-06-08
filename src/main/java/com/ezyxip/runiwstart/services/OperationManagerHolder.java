@@ -1,5 +1,10 @@
 package com.ezyxip.runiwstart.services;
 
+import com.ezyxip.runiwstart.entities.EntryEntity;
+import com.ezyxip.runiwstart.repositories.CargounitRepository;
+import com.ezyxip.runiwstart.services.acceptance.AcceptanceManager;
+import com.ezyxip.runiwstart.services.acceptance.AcceptanceManagerBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,23 +15,38 @@ public class OperationManagerHolder {
     private  EntrySelectionStrategy entrySelectionStrategy;
     private PersonnelSelectionStrategy personnelSelectionStrategy;
     private CargoReleaseSelectionStrategy cargoReleaseSelectionStrategy;
-    private ArrayList<OperationManager> managers;
 
+    private final CargounitRepository cargounitRepository;
+    private final ArrayList<OperationManager> managers;
 
-
-    public OperationManagerHolder(AcceptanceAreaSelectionStrategy acceptanceAreaSelectionStrategy, EntrySelectionStrategy entrySelectionStrategy, PersonnelSelectionStrategy personnelSelectionStrategy) {
+    public OperationManagerHolder(
+            @Autowired AcceptanceAreaSelectionStrategy acceptanceAreaSelectionStrategy,
+            @Autowired EntrySelectionStrategy entrySelectionStrategy,
+            @Autowired PersonnelSelectionStrategy personnelSelectionStrategy,
+            @Autowired CargounitRepository cargounitRepository
+            ) {
         this.acceptanceAreaSelectionStrategy = acceptanceAreaSelectionStrategy;
         this.entrySelectionStrategy = entrySelectionStrategy;
         this.personnelSelectionStrategy = personnelSelectionStrategy;
-    }
+        this.cargounitRepository = cargounitRepository;
 
-    public OperationManagerHolder() {
+        managers = new ArrayList<>();
     }
 
     /*
-        Методы, занимающиеся созданием соотвествующих менеджеров операций. После все они будут храниться в холдере
+       Методы, занимающиеся созданием соотвествующих менеджеров операций. После все они будут храниться в холдере
     */
-    //public AcceptanceManager createAcceptanceManager()
+    public AcceptanceManager createAcceptanceManager() throws Exception {
+        EntryEntity entry = entrySelectionStrategy.getEntry();
+        AcceptanceManager acceptanceManager = AcceptanceManager.getBuilder()
+                .setEmployers(personnelSelectionStrategy.getEmployer(1, "ROLE_LOADER").get(0))
+                .setArea(acceptanceAreaSelectionStrategy.getArea(entry))
+                .setEntry(entry)
+                .setRepository(cargounitRepository)
+                .build();
+        managers.add(acceptanceManager);
+        return acceptanceManager;
+    }
     //public CargoMoveManager createCargoMoveManager()
     //public CargoSelectionManager createCargoSelectionManager()
     //public CargoReleaseManager createCargoReleaseManager()

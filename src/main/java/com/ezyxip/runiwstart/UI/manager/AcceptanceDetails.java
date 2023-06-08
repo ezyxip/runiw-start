@@ -2,6 +2,7 @@ package com.ezyxip.runiwstart.UI.manager;
 
 import com.ezyxip.runiwstart.entities.AcceptanceEntity;
 import com.ezyxip.runiwstart.repositories.AcceptanceRepository;
+import com.ezyxip.runiwstart.services.OperationManagerHolder;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -13,7 +14,7 @@ public class AcceptanceDetails extends FlexLayout {
 
     AcceptanceEntity acceptance;
 
-    public AcceptanceDetails(AcceptanceRepository repo){
+    public AcceptanceDetails(AcceptanceRepository repo, OperationManagerHolder operationManagerHolder){
         Button delete = new Button("Удалить");
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         delete.setMinWidth("30%");
@@ -46,6 +47,9 @@ public class AcceptanceDetails extends FlexLayout {
         Button exec = new Button("Провести сейчас");
         exec.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         exec.setMinWidth("30%");
+        exec.addClickListener(e->new AcceptanceManagerBuilderDialog(operationManagerHolder).open());
+
+
 
         setFlexWrap(FlexWrap.WRAP);
         setJustifyContentMode(JustifyContentMode.EVENLY);

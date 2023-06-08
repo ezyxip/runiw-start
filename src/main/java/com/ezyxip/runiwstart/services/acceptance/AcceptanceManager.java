@@ -15,6 +15,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class AcceptanceManager implements OperationManager {
+
+    static public AcceptanceManagerBuilder getBuilder(){
+        return new AcceptanceManagerBuilder();
+    }
     protected List<UserEntity> employers;
     protected EntryEntity entry;
     protected AreaEntity area;
@@ -86,8 +90,17 @@ public class AcceptanceManager implements OperationManager {
 
     public void acceptCargo(CargounitEntity cargounit) {
     }
-
     //public void acceptCargo(CargoUnitEntity)
     //public void confirmCargoMove()
 
+
+    @Override
+    public String toString() {
+        return "AcceptanceManager{" +
+                "employers=" + employers +
+                ", entry=" + entry +
+                ", area=" + area +
+                ", cargounitRepository=" + cargounitRepository +
+                '}';
+    }
 }

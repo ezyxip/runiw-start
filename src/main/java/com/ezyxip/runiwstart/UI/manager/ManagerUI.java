@@ -4,6 +4,7 @@ import com.ezyxip.runiwstart.UI.admin.AdsScreen;
 import com.ezyxip.runiwstart.UI.components.ExtendTab;
 import com.ezyxip.runiwstart.repositories.AcceptanceRepository;
 import com.ezyxip.runiwstart.repositories.CellRepository;
+import com.ezyxip.runiwstart.services.OperationManagerHolder;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -29,12 +30,17 @@ public class ManagerUI extends AppLayout {
     CellRepository repository;
     AcceptanceRepository acceptanceRepository;
 
+    OperationManagerHolder operationManagerHolder;
+
     ManagerUI(
             @Autowired CellRepository repository,
-            @Autowired AcceptanceRepository acceptanceRepository
+            @Autowired AcceptanceRepository acceptanceRepository,
+            @Autowired OperationManagerHolder operationManagerHolder
             ){
         this.repository = repository;
         this.acceptanceRepository = acceptanceRepository;
+        this.operationManagerHolder = operationManagerHolder;
+
         Label title = new Label("Менеджер");
         title.getStyle().set("font-size", "var(--lumo-font-size-l)")
                 .set("margin", "0");
@@ -62,7 +68,7 @@ public class ManagerUI extends AppLayout {
         ExtendTab acceptance = new ExtendTab();
         acceptance.add(new Icon(VaadinIcon.SIGN_IN){{getStyle().set("margin", "0.5em");}});
         acceptance.add("Приёмка");
-        acceptance.setCallback(() -> new AcceptanceScreen(acceptanceRepository));
+        acceptance.setCallback(() -> new AcceptanceScreen(acceptanceRepository, operationManagerHolder));
 
         ExtendTab warnings = new ExtendTab();
         warnings.add(new Icon(VaadinIcon.ENVELOPE_O){{getStyle().set("margin", "0.5em");}});

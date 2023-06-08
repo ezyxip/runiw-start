@@ -20,6 +20,8 @@ public class UserEntity {
     @Transient
     List<AuthorityEntity> authorities;
 
+    boolean booking;
+
 
     public UserEntity() {
     }

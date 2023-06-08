@@ -2,6 +2,7 @@ package com.ezyxip.runiwstart.UI.manager;
 
 import com.ezyxip.runiwstart.entities.AcceptanceEntity;
 import com.ezyxip.runiwstart.repositories.AcceptanceRepository;
+import com.ezyxip.runiwstart.services.OperationManagerHolder;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
@@ -20,7 +21,7 @@ public class CurrentAcceptanceScreen extends VerticalLayout {
     static Logger logger = Logger.getLogger(CurrentAcceptanceScreen.class.getName());
     Grid<AcceptanceEntity> grid = new Grid<>(AcceptanceEntity.class, false);
 
-    public CurrentAcceptanceScreen(AcceptanceRepository repo){
+    public CurrentAcceptanceScreen(AcceptanceRepository repo, OperationManagerHolder operationManagerHolder){
 
         HorizontalLayout horizontalLayout = new HorizontalLayout();
 
@@ -53,7 +54,7 @@ public class CurrentAcceptanceScreen extends VerticalLayout {
         grid.setAllRowsVisible(true);
         grid.setItems(repo.findByIsclosedOrderByDate(false));
 
-        grid.setItemDetailsRenderer(new ComponentRenderer<>(()->new AcceptanceDetails(repo), AcceptanceDetails::setAccept));
+        grid.setItemDetailsRenderer(new ComponentRenderer<>(()->new AcceptanceDetails(repo, operationManagerHolder), AcceptanceDetails::setAccept));
 
         add(grid);
     }
