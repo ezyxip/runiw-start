@@ -1,15 +1,14 @@
 package com.ezyxip.runiwstart.services.acceptance;
 
 
-import com.ezyxip.runiwstart.entities.AreaEntity;
-import com.ezyxip.runiwstart.entities.CargounitEntity;
-import com.ezyxip.runiwstart.entities.EntryEntity;
-import com.ezyxip.runiwstart.entities.UserEntity;
+import com.ezyxip.runiwstart.entities.*;
 import com.ezyxip.runiwstart.repositories.CargounitRepository;
 import com.ezyxip.runiwstart.services.AgentContainer;
 import com.ezyxip.runiwstart.services.AgentType;
+import com.ezyxip.runiwstart.services.DataStorage;
 import com.ezyxip.runiwstart.services.OperationManager;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,19 +18,23 @@ public class AcceptanceManager implements OperationManager {
     static public AcceptanceManagerBuilder getBuilder(){
         return new AcceptanceManagerBuilder();
     }
+
+    protected String id;
     protected List<UserEntity> employers;
     protected EntryEntity entry;
     protected AreaEntity area;
-    protected CargounitRepository cargounitRepository;
+    AcceptanceEntity acceptanceEntity;
 
-    public AcceptanceManager(List<UserEntity> employers, EntryEntity entry, AreaEntity area, CargounitRepository cargounitRepository) {
+    public AcceptanceManager(List<UserEntity> employers, EntryEntity entry, AreaEntity area, AcceptanceEntity acceptanceEntity) {
+        this();
         this.employers = employers;
         this.entry = entry;
         this.area = area;
-        this.cargounitRepository = cargounitRepository;
+        this.acceptanceEntity = acceptanceEntity;
     }
 
     protected AcceptanceManager() {
+        id = UUID.randomUUID().toString();
     }
 
     @Override
@@ -41,9 +44,8 @@ public class AcceptanceManager implements OperationManager {
             return null;
         }
         AcceptanceAgent acceptanceAgent = new AcceptanceAgent(this, username);
-        AgentContainer agentContainer = new AgentContainer(AgentType.ACCEPTANCE, acceptanceAgent, "Приёмка",
+        return new AgentContainer(AgentType.ACCEPTANCE, acceptanceAgent, "Приёмка",
                 String.format("Проведение приёмки у ворот %s, зона %s", entry.getName(), area.getName()));
-        return agentContainer;
     }
 
     @Override
@@ -56,36 +58,74 @@ public class AcceptanceManager implements OperationManager {
         
     }
 
-    protected List<UserEntity> getEmployers() {
+    @Override
+    public void reserveResource() {
+        employers.forEach(u -> {
+            u.setBooking(false);
+            DataStorage.userRepository.save(u);
+        });
+        area.setBooking(false);
+        DataStorage.areaRepository.save(area);
+        entry.setBooking(false);
+        DataStorage.entryRepository.save(entry);
+    }
+
+    @Override
+    public String getTitle() {
+        return "Приёмка " + acceptanceEntity.getDate() + " : " + acceptanceEntity.getSource();
+    }
+
+    @Override
+    public void stop() {
+        employers.forEach(u -> {
+            u.setBooking(true);
+            DataStorage.userRepository.save(u);
+        });
+        area.setBooking(true);
+        DataStorage.areaRepository.save(area);
+        entry.setBooking(true);
+        DataStorage.entryRepository.save(entry);
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public List<UserEntity> getEmployers() {
         return employers;
     }
 
-    protected void setEmployers(List<UserEntity> employers) {
+    public void setEmployers(List<UserEntity> employers) {
         this.employers = employers;
     }
 
-    protected EntryEntity getEntry() {
+    public EntryEntity getEntry() {
         return entry;
     }
 
-    protected void setEntry(EntryEntity entry) {
+    public void setEntry(EntryEntity entry) {
         this.entry = entry;
     }
 
-    protected AreaEntity getArea() {
+    public AreaEntity getArea() {
         return area;
     }
 
-    protected void setArea(AreaEntity area) {
+    public void setArea(AreaEntity area) {
         this.area = area;
     }
 
-    protected CargounitRepository getCargounitRepository() {
-        return cargounitRepository;
+    public AcceptanceEntity getAcceptanceEntity() {
+        return acceptanceEntity;
     }
 
-    protected void setCargounitRepository(CargounitRepository cargounitRepository) {
-        this.cargounitRepository = cargounitRepository;
+    public void setAcceptanceEntity(AcceptanceEntity acceptanceEntity) {
+        this.acceptanceEntity = acceptanceEntity;
     }
 
     public void acceptCargo(CargounitEntity cargounit) {
@@ -100,7 +140,6 @@ public class AcceptanceManager implements OperationManager {
                 "employers=" + employers +
                 ", entry=" + entry +
                 ", area=" + area +
-                ", cargounitRepository=" + cargounitRepository +
                 '}';
     }
 }

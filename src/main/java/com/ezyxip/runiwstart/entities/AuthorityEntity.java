@@ -4,12 +4,13 @@ package com.ezyxip.runiwstart.entities;
 import com.ezyxip.runiwstart.services.RoleDict;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "authorities")
-public class AuthorityEntity {
+public class AuthorityEntity implements Serializable {
 
    @EmbeddedId
    AuthorityEntityId id;

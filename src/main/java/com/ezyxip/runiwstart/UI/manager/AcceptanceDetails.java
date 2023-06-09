@@ -47,7 +47,7 @@ public class AcceptanceDetails extends FlexLayout {
         Button exec = new Button("Провести сейчас");
         exec.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         exec.setMinWidth("30%");
-        exec.addClickListener(e->new AcceptanceManagerBuilderDialog(operationManagerHolder).open());
+        exec.addClickListener(e->new AcceptanceManagerBuilderDialog(operationManagerHolder, acceptance).open());
 
 
 

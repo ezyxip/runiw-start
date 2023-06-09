@@ -1,5 +1,6 @@
 package com.ezyxip.runiwstart.services.acceptance;
 
+import com.ezyxip.runiwstart.entities.AcceptanceEntity;
 import com.ezyxip.runiwstart.entities.AreaEntity;
 import com.ezyxip.runiwstart.entities.EntryEntity;
 import com.ezyxip.runiwstart.entities.UserEntity;
@@ -13,11 +14,6 @@ public class AcceptanceManagerBuilder {
     
     public AcceptanceManagerBuilder(){
         res = new AcceptanceManager();
-    }
-    
-    public AcceptanceManagerBuilder setRepository(CargounitRepository cargounitRepository){
-        res.setCargounitRepository(cargounitRepository);
-        return this;
     }
     
     public AcceptanceManagerBuilder setEmployers(List<UserEntity> employers){
@@ -43,15 +39,21 @@ public class AcceptanceManagerBuilder {
         res.setEntry(entry);
         return this;
     }
+
+    public AcceptanceManagerBuilder setAcceptance(AcceptanceEntity acceptanceEntity){
+        res.setAcceptanceEntity(acceptanceEntity);
+        return this;
+    }
     
     public AcceptanceManager build(){
         if(res.getArea() != null 
                 && res.getEmployers() != null 
-                && res.getEntry() != null 
-                && res.getCargounitRepository() != null){
+                && res.getEntry() != null
+                && res.getAcceptanceEntity() != null
+        ){
             return res;
         }else{
-            return null;
+            throw new RuntimeException("Неполная спецификация менеджера приёмки");
         }
     }
 }

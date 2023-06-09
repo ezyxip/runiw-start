@@ -2,11 +2,13 @@ package com.ezyxip.runiwstart.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "entry")
-public class EntryEntity {
+public class EntryEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -68,12 +70,20 @@ public class EntryEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EntryEntity entry = (EntryEntity) o;
+        return isBooking() == entry.isBooking() && Objects.equals(getId(), entry.getId()) && Objects.equals(getName(), entry.getName()) && Objects.equals(getMode(), entry.getMode()) && Objects.equals(getAreas(), entry.getAreas());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getMode(), isBooking(), getAreas());
+    }
+
+    @Override
     public String toString() {
-        return "EntryEntity{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", mode='" + mode + '\'' +
-                ", booking=" + booking +
-                '}';
+        return name;
     }
 }

@@ -8,4 +8,7 @@ public class DataStorage {
     public static AreaRepository areaRepository;
     public static EntryRepository entryRepository;
     public static CargounitRepository cargounitRepository;
+    public static AuthorityRepository authorityRepository;
+    public static AcceptanceRepository acceptanceRepository;
+    public static ManagerRepository managerRepository;
 }

@@ -31,10 +31,15 @@ public class LoaderUI extends AppLayout {
     }
 
     Tabs getTabs(){
-        ExtendTab questList = new ExtendTab();
-        questList.add(new Icon(VaadinIcon.EDIT){{getStyle().set("margin", "0.5em");}});
-        questList.add("Доступные задачи");
-        questList.setCallback(()-> new Label("Список заданий"));
+        ExtendTab taskList = new ExtendTab();
+        taskList.add(new Icon(VaadinIcon.EDIT){{getStyle().set("margin", "0.5em");}});
+        taskList.add("Доступные задачи");
+        taskList.setCallback(()->new TasksScreen(operationManagerHolder));
+
+        ExtendTab currentTask = new ExtendTab();
+        currentTask.add(new Icon(VaadinIcon.QUESTION){{getStyle().set("margin", "0.5em");}});
+        currentTask.add("Текущие задачи");
+        currentTask.setCallback(()-> new Label("Список текущих задач"));
 
         ExtendTab warnings = new ExtendTab();
         warnings.add(new Icon(VaadinIcon.ENVELOPE_O){{getStyle().set("margin", "0.5em");}});
@@ -50,13 +55,15 @@ public class LoaderUI extends AppLayout {
         });
 
 
-        Tabs res = new Tabs(questList, warnings, exit);
+        Tabs res = new Tabs(taskList, currentTask, warnings, exit);
         res.setOrientation(Tabs.Orientation.VERTICAL);
         res.addSelectedChangeListener(
                 event -> {
                     setContent(((ExtendTab)res.getSelectedTab()).getCallback().run());
                 }
         );
+        res.setAutoselect(false);
+        res.setSelectedTab(taskList);
         return res;
     }
 }

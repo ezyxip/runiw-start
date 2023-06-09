@@ -2,9 +2,11 @@ package com.ezyxip.runiwstart.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "entry_to_area")
-public class EntryToAreaRelation {
+public class EntryToAreaRelation implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

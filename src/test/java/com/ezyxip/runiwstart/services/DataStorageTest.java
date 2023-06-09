@@ -14,11 +14,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class DataStorageTest {
 
-    @Autowired
-    CellRepository cellRepository;
     Logger logger = Logger.getLogger(DataStorageTest.class.getName());
 
     @Test
     void dataTest(){
+        logger.info(DataStorage.cellRepository.findAll().toString());
     }
 }

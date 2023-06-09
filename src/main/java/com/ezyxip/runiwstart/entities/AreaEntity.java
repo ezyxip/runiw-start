@@ -2,11 +2,12 @@ package com.ezyxip.runiwstart.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "area")
-public class AreaEntity {
+public class AreaEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,10 +52,6 @@ public class AreaEntity {
 
     @Override
     public String toString() {
-        return "AreaEntity{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", booking=" + booking +
-                '}';
+        return name;
     }
 }

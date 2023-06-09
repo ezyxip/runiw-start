@@ -2,12 +2,13 @@ package com.ezyxip.runiwstart.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
 @Table(name = "acceptance")
-public class AcceptanceEntity {
+public class AcceptanceEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

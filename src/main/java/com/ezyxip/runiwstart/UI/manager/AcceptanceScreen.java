@@ -29,7 +29,7 @@ public class AcceptanceScreen extends VerticalLayout {
         TabSheet res = new TabSheet();
         res.getStyle().set("width", "100%");
         res.add(currentAcceptances, new CurrentAcceptanceScreen(repo, operationManagerHolder));
-        res.add(acceptanceArchive, new Label("Здесь будет архив приёмок"));
+        res.add(acceptanceArchive, new AcceptanceArchive());
 
         return res;
     }

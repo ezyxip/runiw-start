@@ -65,6 +65,11 @@ public class ManagerUI extends AppLayout {
         warehouseModel.add("Груз");
         warehouseModel.setCallback(()-> new Label("Просмотр груза"));
 
+        ExtendTab operations = new ExtendTab();
+        operations.add(new Icon(VaadinIcon.BULLETS){{getStyle().set("margin", "0.5em");}});
+        operations.add("Операции");
+        operations.setCallback(() -> new OperationScreen(operationManagerHolder));
+
         ExtendTab acceptance = new ExtendTab();
         acceptance.add(new Icon(VaadinIcon.SIGN_IN){{getStyle().set("margin", "0.5em");}});
         acceptance.add("Приёмка");
@@ -84,7 +89,7 @@ public class ManagerUI extends AppLayout {
         });
 
 
-        Tabs res = new Tabs(generalInfo, users, warehouseModel, acceptance, warnings, exit);
+        Tabs res = new Tabs(generalInfo, users, warehouseModel, operations, acceptance, warnings, exit);
         res.setOrientation(Tabs.Orientation.VERTICAL);
         res.addSelectedChangeListener(
                 event -> {

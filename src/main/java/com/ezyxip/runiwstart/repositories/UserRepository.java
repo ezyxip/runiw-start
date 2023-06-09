@@ -8,5 +8,7 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity, String> {
+    @Override
+    List<UserEntity> findAll();
     List<UserEntity> findAllByBooking(boolean booking);
 }

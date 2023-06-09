@@ -17,9 +17,9 @@ public class SimplePersonnelSelectionStrategy implements PersonnelSelectionStrat
     @Override
     public List<UserEntity> getEmployer(int count, String role) throws Exception{
         List<UserEntity> res = userRepository.findAllByBooking(true).stream().limit(count).toList();
-        res.stream().filter(u -> {
+        res = res.stream().filter(u -> {
             return authorityRepository.findAllById_Username(u.getUsername()).stream().anyMatch(a-> a.getAuthority().equals(role));
-        });
+        }).toList();
         if(res.isEmpty()) throw new ResourceNotFoundException("Ни одного подходящего работника не найдено");
         return res;
     }

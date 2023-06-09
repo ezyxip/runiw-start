@@ -2,11 +2,13 @@ package com.ezyxip.runiwstart.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
-public class UserEntity {
+public class UserEntity implements Serializable {
     @Id
     @Column(nullable = false, columnDefinition = "varchar(50)")
     String username;
@@ -20,7 +22,7 @@ public class UserEntity {
     @Transient
     List<AuthorityEntity> authorities;
 
-    boolean booking;
+    boolean booking = true;
 
 
     public UserEntity() {
@@ -64,13 +66,29 @@ public class UserEntity {
         this.authorities = authorities;
     }
 
+    public boolean isBooking() {
+        return booking;
+    }
+
+    public void setBooking(boolean booking) {
+        this.booking = booking;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity that = (UserEntity) o;
+        return isEnabled() == that.isEnabled() && booking == that.booking && Objects.equals(getUsername(), that.getUsername()) && Objects.equals(getPassword(), that.getPassword()) && Objects.equals(getAuthorities(), that.getAuthorities());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUsername(), getPassword(), isEnabled(), getAuthorities(), booking);
+    }
+
     @Override
     public String toString() {
-        return "UserEntity{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", enabled=" + enabled +
-                ", authorities=" + authorities +
-                '}';
+        return username;
     }
 }

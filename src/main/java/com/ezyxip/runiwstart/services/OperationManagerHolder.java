@@ -1,13 +1,20 @@
 package com.ezyxip.runiwstart.services;
 
+import com.ezyxip.runiwstart.entities.AcceptanceEntity;
 import com.ezyxip.runiwstart.entities.EntryEntity;
+import com.ezyxip.runiwstart.entities.OperationManagerEntity;
 import com.ezyxip.runiwstart.repositories.CargounitRepository;
+import com.ezyxip.runiwstart.repositories.ManagerRepository;
 import com.ezyxip.runiwstart.services.acceptance.AcceptanceManager;
 import com.ezyxip.runiwstart.services.acceptance.AcceptanceManagerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.stylesheets.LinkStyle;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class OperationManagerHolder {
@@ -23,7 +30,8 @@ public class OperationManagerHolder {
             @Autowired AcceptanceAreaSelectionStrategy acceptanceAreaSelectionStrategy,
             @Autowired EntrySelectionStrategy entrySelectionStrategy,
             @Autowired PersonnelSelectionStrategy personnelSelectionStrategy,
-            @Autowired CargounitRepository cargounitRepository
+            @Autowired CargounitRepository cargounitRepository,
+            @Autowired ManagerRepository managerRepository
             ) {
         this.acceptanceAreaSelectionStrategy = acceptanceAreaSelectionStrategy;
         this.entrySelectionStrategy = entrySelectionStrategy;
@@ -31,28 +39,56 @@ public class OperationManagerHolder {
         this.cargounitRepository = cargounitRepository;
 
         managers = new ArrayList<>();
+
+        List<OperationManagerEntity> operationManagerEntities = managerRepository.findAll();
+        operationManagerEntities.forEach(ome -> {
+            try {
+                managers.add(OperationManager.deserialize(ome.getObject()));
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
     }
 
     /*
        Методы, занимающиеся созданием соотвествующих менеджеров операций. После все они будут храниться в холдере
     */
-    public AcceptanceManager createAcceptanceManager() throws Exception {
+    public AcceptanceManager createAcceptanceManager(AcceptanceEntity acceptanceEntity) throws Exception {
         EntryEntity entry = entrySelectionStrategy.getEntry();
-        AcceptanceManager acceptanceManager = AcceptanceManager.getBuilder()
+        return AcceptanceManager.getBuilder()
                 .setEmployers(personnelSelectionStrategy.getEmployer(1, "ROLE_LOADER").get(0))
                 .setArea(acceptanceAreaSelectionStrategy.getArea(entry))
                 .setEntry(entry)
-                .setRepository(cargounitRepository)
+                .setAcceptance(acceptanceEntity)
                 .build();
-        managers.add(acceptanceManager);
-        return acceptanceManager;
     }
     //public CargoMoveManager createCargoMoveManager()
     //public CargoSelectionManager createCargoSelectionManager()
     //public CargoReleaseManager createCargoReleaseManager()
 
-    //public AgentContainer getAgent()
+    public List<AgentContainer> getAgent(String username){
+        return managers.stream().map(m -> m.getAgentContainer(username)).filter(Objects::nonNull).toList();
+    }
 
+    public void initManager(OperationManager operationManager){
+        try {
+            OperationManagerEntity operationManagerEntity = new OperationManagerEntity(
+                    operationManager.getId(),
+                    OperationManager.serialize(operationManager)
+            );
+            managers.add(operationManager);
+            operationManager.reserveResource();
+            DataStorage.managerRepository.save(operationManagerEntity);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void stopManager(OperationManager operationManager){
+        operationManager.stop();
+        managers.remove(operationManager);
+    }
 
     public CargoReleaseSelectionStrategy getCargoReleaseSelectionStrategy() {
         return cargoReleaseSelectionStrategy;
@@ -84,5 +120,9 @@ public class OperationManagerHolder {
 
     public void setPersonnelSelectionStrategy(PersonnelSelectionStrategy personnelSelectionStrategy) {
         this.personnelSelectionStrategy = personnelSelectionStrategy;
+    }
+
+    public ArrayList<OperationManager> getManagers() {
+        return managers;
     }
 }
