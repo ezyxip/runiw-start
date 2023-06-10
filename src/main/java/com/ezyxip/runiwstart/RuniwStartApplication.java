@@ -36,6 +36,7 @@ public class RuniwStartApplication {
             DataStorage.acceptanceRepository = applicationContext.getBean(AcceptanceRepository.class);
             DataStorage.managerRepository = applicationContext.getBean(ManagerRepository.class);
             DataStorage.cargotypeRepository = applicationContext.getBean(CargotypeRepository.class);
+            DataStorage.messageRepository = applicationContext.getBean(MessageRepository.class);
         };
     }
 

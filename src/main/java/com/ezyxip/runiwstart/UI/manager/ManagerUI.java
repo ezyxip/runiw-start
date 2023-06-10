@@ -1,7 +1,7 @@
 package com.ezyxip.runiwstart.UI.manager;
 
-import com.ezyxip.runiwstart.UI.admin.AdsScreen;
 import com.ezyxip.runiwstart.UI.components.ExtendTab;
+import com.ezyxip.runiwstart.UI.components.MessengerScreen;
 import com.ezyxip.runiwstart.repositories.AcceptanceRepository;
 import com.ezyxip.runiwstart.repositories.CellRepository;
 import com.ezyxip.runiwstart.services.OperationManagerHolder;
@@ -78,7 +78,7 @@ public class ManagerUI extends AppLayout {
         ExtendTab warnings = new ExtendTab();
         warnings.add(new Icon(VaadinIcon.ENVELOPE_O){{getStyle().set("margin", "0.5em");}});
         warnings.add("Объявления");
-        warnings.setCallback(AdsScreen::new);
+        warnings.setCallback(MessengerScreen::new);
 
         ExtendTab exit = new ExtendTab();
         exit.add(new Icon(VaadinIcon.ANGLE_DOUBLE_LEFT){{getStyle().set("margin", "0.5em");}});

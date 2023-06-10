@@ -1,6 +1,7 @@
 package com.ezyxip.runiwstart.UI.admin;
 
 import com.ezyxip.runiwstart.UI.components.ExtendTab;
+import com.ezyxip.runiwstart.UI.components.MessengerScreen;
 import com.ezyxip.runiwstart.repositories.AuthorityRepository;
 import com.ezyxip.runiwstart.repositories.UserRepository;
 import com.vaadin.flow.component.Text;
@@ -57,7 +58,7 @@ public class AdminUI extends AppLayout {
         ExtendTab warnings = new ExtendTab();
         warnings.add(new Icon(VaadinIcon.ENVELOPE_O){{getStyle().set("margin", "0.5em");}});
         warnings.add("Объявления");
-        warnings.setCallback(() -> new AdsScreen());
+        warnings.setCallback(MessengerScreen::new);
 
         ExtendTab exit = new ExtendTab();
         exit.add(new Icon(VaadinIcon.ANGLE_DOUBLE_LEFT){{getStyle().set("margin", "0.5em");}});
