@@ -78,10 +78,6 @@ public class CellEntity {
 
     @Override
     public String toString() {
-        return "CellEntity{" +
-                "id=" + id +
-                ", rack=" + (rack_id != null) +
-                ", name='" + name + '\'' +
-                '}';
+        return String.format("%s-%s-%s", getName(), getRack_id().getName(), getRack_id().getZone_id().getName());
     }
 }

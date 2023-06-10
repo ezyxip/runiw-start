@@ -11,4 +11,5 @@ public class DataStorage {
     public static AuthorityRepository authorityRepository;
     public static AcceptanceRepository acceptanceRepository;
     public static ManagerRepository managerRepository;
+    public static CargotypeRepository cargotypeRepository;
 }

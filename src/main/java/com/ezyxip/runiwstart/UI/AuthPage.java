@@ -60,13 +60,14 @@ public class AuthPage extends VerticalLayout {
                 if(auth()){
                     User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                     logger.info("Вход выполнен успешно. Пользователь: " + user.getUsername());
-                    if(VaadinServletRequest.getCurrent().getSession().getAttribute("uriCache") != null) {
-                        UriCacheStore store = (UriCacheStore) VaadinServletRequest.getCurrent().getSession().getAttribute("uriCache");
-                        logger.info(store.toString());
-                        UI.getCurrent().navigate(store.getCache().firstElement());
-                    }else{
-                        UI.getCurrent().navigate("/");
-                    }
+//                    if(VaadinServletRequest.getCurrent().getSession().getAttribute("uriCache") != null) {
+//                        UriCacheStore store = (UriCacheStore) VaadinServletRequest.getCurrent().getSession().getAttribute("uriCache");
+//                        logger.info(store.toString());
+//                        UI.getCurrent().navigate(store.getCache().firstElement());
+//                    }else{
+//                        UI.getCurrent().navigate("/");
+//                    }
+                    UI.getCurrent().navigate("/nav");
                 } else {
                     logger.info("Неверные логин и пароль. Логин/пароль:" + textField.getValue() + "/" + passwordField.getValue());
                     onBadAuth();

@@ -30,7 +30,7 @@ public class SecurityConfigurate extends VaadinWebSecurity {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception{
-        http.addFilterAfter(new UriCacheFilter(), UsernamePasswordAuthenticationFilter.class);
+        //http.addFilterAfter(new UriCacheFilter(), UsernamePasswordAuthenticationFilter.class);
         http.csrf().disable();
         //http.formLogin(Customizer.withDefaults());
         super.configure(http);

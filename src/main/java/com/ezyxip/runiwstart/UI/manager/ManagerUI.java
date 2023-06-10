@@ -63,7 +63,7 @@ public class ManagerUI extends AppLayout {
         ExtendTab warehouseModel = new ExtendTab();
         warehouseModel.add(new Icon(VaadinIcon.CUBES){{getStyle().set("margin", "0.5em");}});
         warehouseModel.add("Груз");
-        warehouseModel.setCallback(()-> new Label("Просмотр груза"));
+        warehouseModel.setCallback(()-> new CargoViewerScreen());
 
         ExtendTab operations = new ExtendTab();
         operations.add(new Icon(VaadinIcon.BULLETS){{getStyle().set("margin", "0.5em");}});

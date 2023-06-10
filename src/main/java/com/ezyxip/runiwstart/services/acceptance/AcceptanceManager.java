@@ -67,7 +67,11 @@ public class AcceptanceManager implements OperationManager {
         if(user.isEmpty()) {
             throw new RuntimeException("Попытка завершения задачи работником, которому она не давалась");
         }
-         employers = employers.stream().filter(u -> !Objects.equals(u.getUsername(), user.get().getUsername())).toList();
+        UserEntity emp = user.get();
+        emp.setBooking(true);
+        DataStorage.userRepository.save(emp);
+
+        employers = employers.stream().filter(u -> !Objects.equals(u.getUsername(), user.get().getUsername())).toList();
         if(employers.isEmpty()) {
             enable = false;
             stop();
@@ -83,10 +87,6 @@ public class AcceptanceManager implements OperationManager {
 
     @Override
     public void reserveResource() {
-        employers.forEach(u -> {
-            u.setBooking(false);
-            DataStorage.userRepository.save(u);
-        });
         area.setBooking(false);
         DataStorage.areaRepository.save(area);
         entry.setBooking(false);
@@ -140,7 +140,8 @@ public class AcceptanceManager implements OperationManager {
         return enable;
     }
 
-    public void acceptCargo(CargounitEntity cargounit) {
+    public void acceptCargo(List<CargounitEntity> cargounit) {
+        DataStorage.cargounitRepository.saveAll(cargounit);
     }
 
     @Override

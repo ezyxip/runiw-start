@@ -40,10 +40,6 @@ public class CargotypeEntity {
 
     @Override
     public String toString() {
-        return "CargotypeEntity{" +
-                "id=" + id +
-                ", unittype=" + unittype +
-                ", name='" + name + '\'' +
-                '}';
+        return name;
     }
 }
