@@ -22,9 +22,10 @@ public interface OperationManager extends Serializable {
     String getId();
     AgentContainer getAgentContainer(String username);
     void confirmWorkStart(String username);
-    void complete(String username);
+    boolean complete(String username);
     void reserveResource();
     String getTitle();
-
     void stop();
+    void save() throws IOException;
+    boolean isEnable();
 }

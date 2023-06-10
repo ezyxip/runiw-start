@@ -1,6 +1,7 @@
 package com.ezyxip.runiwstart.UI.loader;
 
 import com.ezyxip.runiwstart.services.AgentContainer;
+import com.ezyxip.runiwstart.services.AgentType;
 import com.ezyxip.runiwstart.services.OperationManagerHolder;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -9,6 +10,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextAreaVariant;
@@ -30,6 +32,10 @@ public class AvailableTaskScreen extends VerticalLayout {
                             .set("text-width", "bold");
                     Label description = new Label(agentContainer.getInfo());
                     layout.add(taskTitle, description);
+                    if(agentContainer.getType() == AgentType.CONFIRMED){
+                        taskTitle.getStyle().set("color", "var(--lumo-primary-color");
+                        description.getStyle().set("color", "var(--lumo-primary-color");
+                    }
                 }
         ));
         grid.setItems(operationManagerHolder.getAgent(SecurityContextHolder.getContext().getAuthentication().getName()));
@@ -38,14 +44,14 @@ public class AvailableTaskScreen extends VerticalLayout {
         grid.setAllRowsVisible(true);
 
         grid.addItemClickListener(e -> {
+            if(e.getItem().getType() == AgentType.CONFIRMED){
+                return;
+            }
             Dialog dialog = new Dialog();
             dialog.setHeaderTitle("Подтверждение");
             VerticalLayout content = new VerticalLayout();
-//            Optional<AgentContainer> agentContainerOpt = e.getItem();
-//            if(agentContainerOpt.isEmpty()) {
-//                return;
-//            }
-            AgentContainer agentContainer = /*agentContainerOpt.get()*/ e.getItem();
+
+            AgentContainer agentContainer = e.getItem();
             Label text = new Label("Принять следующую задачу?");
 
             TextField title = new TextField();
@@ -61,6 +67,12 @@ public class AvailableTaskScreen extends VerticalLayout {
 
             Button yes = new Button("Подтвердить");
             yes.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            yes.addClickListener(ev->{
+                Tab tab = new Tab("Новая задача");
+                parent.add(tab, e.getItem().getAgent().getUI(()->parent.remove(tab)));
+                dialog.close();
+            });
+
             Button cancel = new Button("Отмена");
             cancel.addClickListener(ev->dialog.close());
 

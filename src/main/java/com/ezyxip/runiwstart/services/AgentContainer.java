@@ -26,6 +26,11 @@ public class AgentContainer {
         return agent;
     }
 
+    public OperationAgent getAgentAgain(){
+        if(type == AgentType.UNCONFIRMED) throw new RuntimeException("Вызван агент без подтверждения");
+        return agent;
+    }
+
     public String getTitle() {
         return title;
     }

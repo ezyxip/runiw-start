@@ -1,36 +1,24 @@
 package com.ezyxip.runiwstart.services.acceptance;
 
+import com.ezyxip.runiwstart.UI.taskUI.AcceptanceTaskScreen;
 import com.ezyxip.runiwstart.entities.CargounitEntity;
+import com.ezyxip.runiwstart.services.AbstractAgent;
 import com.ezyxip.runiwstart.services.OperationAgent;
 import com.vaadin.flow.component.Component;
 
-public class AcceptanceAgent implements OperationAgent {
-    
-    protected AcceptanceManager manager;
-    protected String username;
+public class AcceptanceAgent extends AbstractAgent {
     
     public AcceptanceAgent(AcceptanceManager parentManager, String username){
-        this.manager = parentManager;
-        this.username = username;
+        super(parentManager, username);
     }
     
     //Методы для работы агента
     public void acceptCargo(CargounitEntity cargounit){
-        manager.acceptCargo(cargounit);
-    }
-    
-    @Override
-    public void complete() {
-        manager.complete(username);
+        ((AcceptanceManager)manager).acceptCargo(cargounit);
     }
 
     @Override
-    public Component getUI() {
-        return null;
-    }
-
-    @Override
-    public void confirmStart() {
-        manager.confirmWorkStart(username);
+    public Component getUI(Runnable onClose) {
+        return new AcceptanceTaskScreen(onClose, this);
     }
 }

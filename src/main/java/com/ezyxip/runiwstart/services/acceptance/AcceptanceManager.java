@@ -3,15 +3,11 @@ package com.ezyxip.runiwstart.services.acceptance;
 
 import com.ezyxip.runiwstart.entities.*;
 import com.ezyxip.runiwstart.repositories.CargounitRepository;
-import com.ezyxip.runiwstart.services.AgentContainer;
-import com.ezyxip.runiwstart.services.AgentType;
-import com.ezyxip.runiwstart.services.DataStorage;
-import com.ezyxip.runiwstart.services.OperationManager;
+import com.ezyxip.runiwstart.services.*;
 
 import javax.xml.crypto.Data;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 
 public class AcceptanceManager implements OperationManager {
 
@@ -19,11 +15,14 @@ public class AcceptanceManager implements OperationManager {
         return new AcceptanceManagerBuilder();
     }
 
-    protected String id;
-    protected List<UserEntity> employers;
-    protected EntryEntity entry;
-    protected AreaEntity area;
-    AcceptanceEntity acceptanceEntity;
+    private String id;
+    private List<UserEntity> employers;
+    private EntryEntity entry;
+    private AreaEntity area;
+    private AcceptanceEntity acceptanceEntity;
+    private HashMap<String, AgentType> checks;
+    private boolean enable = true;
+
 
     public AcceptanceManager(List<UserEntity> employers, EntryEntity entry, AreaEntity area, AcceptanceEntity acceptanceEntity) {
         this();
@@ -31,10 +30,12 @@ public class AcceptanceManager implements OperationManager {
         this.entry = entry;
         this.area = area;
         this.acceptanceEntity = acceptanceEntity;
+        this.checks = new HashMap<>();
     }
 
     protected AcceptanceManager() {
         id = UUID.randomUUID().toString();
+        this.checks = new HashMap<>();
     }
 
     @Override
@@ -44,18 +45,40 @@ public class AcceptanceManager implements OperationManager {
             return null;
         }
         AcceptanceAgent acceptanceAgent = new AcceptanceAgent(this, username);
-        return new AgentContainer(AgentType.ACCEPTANCE, acceptanceAgent, "Приёмка",
+        return new AgentContainer(checks.get(username), acceptanceAgent, "Приёмка",
                 String.format("Проведение приёмки у ворот %s, зона %s", entry.getName(), area.getName()));
+
     }
 
     @Override
     public void confirmWorkStart(String username) {
-
+        checks.remove(username);
+        checks.put(username, AgentType.CONFIRMED);
+        try {
+            save();
+        } catch (IOException e) {
+            throw new RuntimeException("Не удалось сохранить менеджер приёмки после соглашения к работе сотрудника: " + username);
+        }
     }
 
     @Override
-    public void complete(String username) {
-        
+    public boolean complete(String username) {
+        Optional<UserEntity> user = employers.stream().filter(u -> u.getUsername().equals(username)).findFirst();
+        if(user.isEmpty()) {
+            throw new RuntimeException("Попытка завершения задачи работником, которому она не давалась");
+        }
+         employers = employers.stream().filter(u -> !Objects.equals(u.getUsername(), user.get().getUsername())).toList();
+        if(employers.isEmpty()) {
+            enable = false;
+            stop();
+        } else{
+            try {
+                save();
+            } catch (IOException e) {
+                throw new RuntimeException("Не удалось сохранить менеджер приёмки после завершения работы сотрудником: " + username);
+            }
+        }
+        return true;
     }
 
     @Override
@@ -68,6 +91,16 @@ public class AcceptanceManager implements OperationManager {
         DataStorage.areaRepository.save(area);
         entry.setBooking(false);
         DataStorage.entryRepository.save(entry);
+
+        for(UserEntity i : employers){
+            checks.put(i.getUsername(), AgentType.UNCONFIRMED);
+        }
+
+        try {
+            save();
+        } catch (IOException e) {
+            throw new RuntimeException("Не удалось сохранить менеджер приёмки после резервирования ресурсов");
+        }
     }
 
     @Override
@@ -85,6 +118,29 @@ public class AcceptanceManager implements OperationManager {
         DataStorage.areaRepository.save(area);
         entry.setBooking(true);
         DataStorage.entryRepository.save(entry);
+
+        DataStorage.managerRepository.deleteById(getId());
+
+        enable = false;
+        employers = new ArrayList<>();
+
+    }
+
+    @Override
+    public void save() throws IOException {
+        OperationManagerEntity operationManagerEntity = new OperationManagerEntity(
+                this.getId(),
+                OperationManager.serialize(this)
+        );
+        DataStorage.managerRepository.save(operationManagerEntity);
+    }
+
+    @Override
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void acceptCargo(CargounitEntity cargounit) {
     }
 
     @Override
@@ -127,12 +183,6 @@ public class AcceptanceManager implements OperationManager {
     public void setAcceptanceEntity(AcceptanceEntity acceptanceEntity) {
         this.acceptanceEntity = acceptanceEntity;
     }
-
-    public void acceptCargo(CargounitEntity cargounit) {
-    }
-    //public void acceptCargo(CargoUnitEntity)
-    //public void confirmCargoMove()
-
 
     @Override
     public String toString() {

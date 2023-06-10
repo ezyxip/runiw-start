@@ -22,21 +22,17 @@ public class OperationManagerHolder {
     private  EntrySelectionStrategy entrySelectionStrategy;
     private PersonnelSelectionStrategy personnelSelectionStrategy;
     private CargoReleaseSelectionStrategy cargoReleaseSelectionStrategy;
-
-    private final CargounitRepository cargounitRepository;
     private final ArrayList<OperationManager> managers;
 
     public OperationManagerHolder(
             @Autowired AcceptanceAreaSelectionStrategy acceptanceAreaSelectionStrategy,
             @Autowired EntrySelectionStrategy entrySelectionStrategy,
             @Autowired PersonnelSelectionStrategy personnelSelectionStrategy,
-            @Autowired CargounitRepository cargounitRepository,
             @Autowired ManagerRepository managerRepository
             ) {
         this.acceptanceAreaSelectionStrategy = acceptanceAreaSelectionStrategy;
         this.entrySelectionStrategy = entrySelectionStrategy;
         this.personnelSelectionStrategy = personnelSelectionStrategy;
-        this.cargounitRepository = cargounitRepository;
 
         managers = new ArrayList<>();
 
@@ -45,10 +41,9 @@ public class OperationManagerHolder {
             try {
                 managers.add(OperationManager.deserialize(ome.getObject()));
             } catch (IOException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Не удалось десериализовать менеджер " + ome.getId());
             }
         });
-
     }
 
     /*
@@ -87,6 +82,7 @@ public class OperationManagerHolder {
 
     public void stopManager(OperationManager operationManager){
         operationManager.stop();
+        DataStorage.managerRepository.deleteById(operationManager.getId());
         managers.remove(operationManager);
     }
 
@@ -122,7 +118,7 @@ public class OperationManagerHolder {
         this.personnelSelectionStrategy = personnelSelectionStrategy;
     }
 
-    public ArrayList<OperationManager> getManagers() {
-        return managers;
+    public List<OperationManager> getManagers() {
+        return managers.stream().filter(OperationManager::isEnable).toList();
     }
 }

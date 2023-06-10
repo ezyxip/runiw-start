@@ -5,6 +5,7 @@ import com.ezyxip.runiwstart.entities.AreaEntity;
 import com.ezyxip.runiwstart.entities.EntryEntity;
 import com.ezyxip.runiwstart.entities.UserEntity;
 import com.ezyxip.runiwstart.repositories.CargounitRepository;
+import com.ezyxip.runiwstart.services.OperationManagerHolder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class AcceptanceManagerBuilder {
     }
     
     public AcceptanceManagerBuilder addEmployers(UserEntity... employers){
-        res.employers.addAll(Arrays.stream(employers).collect(Collectors.toSet()));
+        res.getEmployers().addAll(Arrays.stream(employers).collect(Collectors.toSet()));
         return this;
     }
     
