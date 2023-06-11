@@ -6,6 +6,8 @@ import com.ezyxip.runiwstart.entities.CargounitEntity;
 import com.ezyxip.runiwstart.entities.OrderEntity;
 import com.ezyxip.runiwstart.services.DataStorage;
 import com.ezyxip.runiwstart.services.NomenclaturePosition;
+import com.ezyxip.runiwstart.services.OperationManagerHolder;
+import com.ezyxip.runiwstart.services.cargoselect.CargoSelectManager;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -32,11 +34,13 @@ import java.util.List;
 public class OrderScreen extends TabSheet {
 
     Grid<OrderEntity> requestGrid = new Grid<>(OrderEntity.class, false);
-    public OrderScreen(){
+    OperationManagerHolder operationManagerHolder;
+    public OrderScreen(OperationManagerHolder operationManagerHolder){
         Tab requests = new Tab("Заявки");
         Tab orders = new Tab("Заказы");
         add(requests, requestsContent());
         add(orders, orderContent());
+        this.operationManagerHolder = operationManagerHolder;
     }
 
     private VerticalLayout orderContent(){
@@ -276,5 +280,12 @@ public class OrderScreen extends TabSheet {
 
         order.setIsapproved(true);
         DataStorage.orderRepository.save(order);
+        try {
+            CargoSelectManager m = operationManagerHolder.createCargoSelectManager(order);
+            operationManagerHolder.initManager(m);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

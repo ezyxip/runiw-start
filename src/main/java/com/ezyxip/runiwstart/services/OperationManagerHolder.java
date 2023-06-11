@@ -3,10 +3,12 @@ package com.ezyxip.runiwstart.services;
 import com.ezyxip.runiwstart.entities.AcceptanceEntity;
 import com.ezyxip.runiwstart.entities.EntryEntity;
 import com.ezyxip.runiwstart.entities.OperationManagerEntity;
+import com.ezyxip.runiwstart.entities.OrderEntity;
 import com.ezyxip.runiwstart.repositories.CargounitRepository;
 import com.ezyxip.runiwstart.repositories.ManagerRepository;
 import com.ezyxip.runiwstart.services.acceptance.AcceptanceManager;
 import com.ezyxip.runiwstart.services.acceptance.AcceptanceManagerBuilder;
+import com.ezyxip.runiwstart.services.cargoselect.CargoSelectManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.stylesheets.LinkStyle;
@@ -59,7 +61,13 @@ public class OperationManagerHolder {
                 .build();
     }
     //public CargoMoveManager createCargoMoveManager()
-    //public CargoSelectionManager createCargoSelectionManager()
+    public CargoSelectManager createCargoSelectManager(OrderEntity order) throws Exception {
+        CargoSelectManager manager = new CargoSelectManager();
+        manager.setEmployer(personnelSelectionStrategy.getEmployer(1, "ROLE_MANAGER").get(0));
+        manager.setOrder(order);
+        manager.setArea(entrySelectionStrategy.getEntry().getAreas().get(0).getArea());
+        return manager;
+    }
     //public CargoReleaseManager createCargoReleaseManager()
 
     public List<AgentContainer> getAgent(String username){

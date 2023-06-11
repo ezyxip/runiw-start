@@ -78,7 +78,7 @@ public class ManagerUI extends AppLayout {
         ExtendTab order = new ExtendTab();
         order.add(new Icon(VaadinIcon.PAPERCLIP){{getStyle().set("margin", "0.5em");}});
         order.add("Заказы");
-        order.setCallback(() -> new OrderScreen());
+        order.setCallback(() -> new OrderScreen(operationManagerHolder));
 
         ExtendTab warnings = new ExtendTab();
         warnings.add(new Icon(VaadinIcon.ENVELOPE_O){{getStyle().set("margin", "0.5em");}});
