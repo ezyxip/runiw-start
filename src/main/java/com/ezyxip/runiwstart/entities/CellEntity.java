@@ -22,6 +22,9 @@ public class CellEntity {
 
     @OneToMany(targetEntity = CellConstraintEntity.class, fetch = FetchType.EAGER, mappedBy = "cell")
     private List<CellConstraintEntity> constraints;
+
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "cell")
+    CargounitEntity cargounit;
     public CellEntity() {
     }
 
@@ -29,6 +32,14 @@ public class CellEntity {
         this.id = id;
         this.rack_id = rack;
         this.name = name;
+    }
+
+    public CargounitEntity getCargounit() {
+        return cargounit;
+    }
+
+    public void setCargounit(CargounitEntity cargounit) {
+        this.cargounit = cargounit;
     }
 
     public List<CellConstraintEntity> getConstraints() {

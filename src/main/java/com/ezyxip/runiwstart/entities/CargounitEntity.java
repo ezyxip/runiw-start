@@ -12,7 +12,8 @@ public class CargounitEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private CargotypeEntity cargotype;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cell_id")
     private CellEntity cell;
 
     @ManyToOne(fetch = FetchType.EAGER)

@@ -5,7 +5,6 @@ import com.ezyxip.runiwstart.entities.CargotypeEntity;
 import com.ezyxip.runiwstart.entities.CargounitEntity;
 import com.ezyxip.runiwstart.entities.CellEntity;
 import com.ezyxip.runiwstart.services.DataStorage;
-import com.ezyxip.runiwstart.services.OperationAgent;
 import com.ezyxip.runiwstart.services.acceptance.AcceptanceAgent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -27,6 +26,8 @@ public class AcceptanceTaskScreen extends VerticalLayout {
     Button complete;
 
     List<CargounitEntity> acceptanceCargo;
+
+    ArrayList<CellEntity> occupiedCells = new ArrayList<>();
     public AcceptanceTaskScreen(Runnable onClose, AcceptanceAgent agent, AcceptanceEntity acceptance){
         this.onClose = onClose;
         complete = new Button("Закончить");
@@ -35,10 +36,6 @@ public class AcceptanceTaskScreen extends VerticalLayout {
             agent.complete();
             onClose.run();
         });
-
-//        ComboBox<CargotypeEntity> cargotype = new ComboBox<>("Тип груза");
-//        ComboBox<CargotypeEntity> cell = new ComboBox<>("Ячейка");
-//        TextField count = new TextField("Количество (ед)");
 
         acceptanceCargo = new ArrayList<>();
 
@@ -83,14 +80,15 @@ public class AcceptanceTaskScreen extends VerticalLayout {
                     e.getItem().getCell().getRack_id().getZone_id().getName()
             ));
             address.setReadOnly(true);
-            address.setWidth("100%");;
+            address.setWidth("100%");
 
-            content.add(type, count, address);
+            content.add(label, type, count, address);
 
             Button delete = new Button("Удалить");
             delete.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
             delete.addClickListener(ev->{
                 acceptanceCargo.remove(e.getItem());
+                occupiedCells.remove(e.getItem().getCell());
                 grid.setItems(acceptanceCargo);
                 dialog.close();
             });
@@ -122,11 +120,12 @@ public class AcceptanceTaskScreen extends VerticalLayout {
             type.setItems(types);
             type.setWidth("100%");
             type.setValue(types.get(0));
-            type.addValueChangeListener(ev-> {
-                count.setLabel("Количество (" + ev.getValue().getUnittype().getName() + ")");
-            });
+            type.addValueChangeListener(ev-> count.setLabel("Количество (" + ev.getValue().getUnittype().getName() + ")"));
 
-            List<CellEntity> cells = DataStorage.cellRepository.findAll();
+            List<CellEntity> cells = DataStorage.cellRepository.findAll().stream()
+                    .filter(c -> c.getCargounit() == null)
+                    .filter(c -> occupiedCells.stream().noneMatch((oc) -> oc.toString().equals(c.toString())))
+                    .toList();
             ComboBox<CellEntity> address = new ComboBox<>("Ячейка");
             address.setItems(cells);
             address.setValue(cells.get(0));
@@ -144,6 +143,8 @@ public class AcceptanceTaskScreen extends VerticalLayout {
                 cargounit.setCount(Integer.parseInt(count.getValue()));
                 acceptanceCargo.add(cargounit);
                 grid.setItems(acceptanceCargo);
+
+                occupiedCells.add(address.getValue());
 
                 dialog.close();
             });
