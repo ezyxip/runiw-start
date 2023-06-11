@@ -13,14 +13,25 @@ public class CargoBookingEntity {
     CargounitEntity cargounit;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    OrderEntity order;
+    OrderEntity orders;
+
+    int count;
 
     public CargoBookingEntity() {
     }
 
-    public CargoBookingEntity(CargounitEntity cargounit, OrderEntity order) {
+    public CargoBookingEntity(CargounitEntity cargounit, OrderEntity orders, int count) {
         this.cargounit = cargounit;
-        this.order = order;
+        this.orders = orders;
+        this.count = count;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public Long getId() {
@@ -39,12 +50,12 @@ public class CargoBookingEntity {
         this.cargounit = cargounit;
     }
 
-    public OrderEntity getOrder() {
-        return order;
+    public OrderEntity getOrders() {
+        return orders;
     }
 
-    public void setOrder(OrderEntity order) {
-        this.order = order;
+    public void setOrders(OrderEntity order) {
+        this.orders = order;
     }
 
     @Override
@@ -52,7 +63,7 @@ public class CargoBookingEntity {
         return "CargoBookingEntity{" +
                 "id=" + id +
                 ", cargounit=" + cargounit +
-                ", order=" + order +
+                ", order=" + orders +
                 '}';
     }
 }

@@ -2,6 +2,8 @@ package com.ezyxip.runiwstart.entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "cargounit")
 public class CargounitEntity {
@@ -11,6 +13,9 @@ public class CargounitEntity {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private CargotypeEntity cargotype;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "cargounit")
+    List<CargoBookingEntity> booking;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cell_id")
@@ -69,6 +74,14 @@ public class CargounitEntity {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public List<CargoBookingEntity> getBooking() {
+        return booking;
+    }
+
+    public void setBooking(List<CargoBookingEntity> booking) {
+        this.booking = booking;
     }
 
     @Override

@@ -46,14 +46,14 @@ public class ManagerUI extends AppLayout {
                 .set("margin", "0");
         addToNavbar(new DrawerToggle(), title);
         addToDrawer(getTabs());
-        setContent(new Div(new Text("Ну, в общем, склад работает... а может и нет")) {{getStyle().set("margin", "1em");}});
+        setContent(new ManagerGeneralInfo());
     }
 
     Tabs getTabs(){
         ExtendTab generalInfo = new ExtendTab();
         generalInfo.add(new Icon(VaadinIcon.EDIT){{getStyle().set("margin", "0.5em");}});
         generalInfo.add("Общие сведения");
-        generalInfo.setCallback(()-> new Label("Ну, в общем, склад работает... а может и нет"));
+        generalInfo.setCallback(ManagerGeneralInfo::new);
 
         ExtendTab users = new ExtendTab();
         users.add(new Icon(VaadinIcon.COMPILE){{getStyle().set("margin", "0.5em");}});
@@ -75,6 +75,11 @@ public class ManagerUI extends AppLayout {
         acceptance.add("Приёмка");
         acceptance.setCallback(() -> new AcceptanceScreen(acceptanceRepository, operationManagerHolder));
 
+        ExtendTab order = new ExtendTab();
+        order.add(new Icon(VaadinIcon.PAPERCLIP){{getStyle().set("margin", "0.5em");}});
+        order.add("Заказы");
+        order.setCallback(() -> new OrderScreen());
+
         ExtendTab warnings = new ExtendTab();
         warnings.add(new Icon(VaadinIcon.ENVELOPE_O){{getStyle().set("margin", "0.5em");}});
         warnings.add("Объявления");
@@ -89,7 +94,7 @@ public class ManagerUI extends AppLayout {
         });
 
 
-        Tabs res = new Tabs(generalInfo, users, warehouseModel, operations, acceptance, warnings, exit);
+        Tabs res = new Tabs(generalInfo, users, warehouseModel, operations, acceptance, order, warnings, exit);
         res.setOrientation(Tabs.Orientation.VERTICAL);
         res.addSelectedChangeListener(
                 event -> {

@@ -2,9 +2,12 @@ package com.ezyxip.runiwstart.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 @Entity
 @Table(name = "cargotype")
-public class CargotypeEntity {
+public class CargotypeEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,6 +39,19 @@ public class CargotypeEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CargotypeEntity that = (CargotypeEntity) o;
+        return Objects.equals(id, that.id) && Objects.equals(getUnittype(), that.getUnittype()) && Objects.equals(getName(), that.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, getUnittype(), getName());
     }
 
     @Override

@@ -13,4 +13,6 @@ public class DataStorage {
     public static ManagerRepository managerRepository;
     public static CargotypeRepository cargotypeRepository;
     public static MessageRepository messageRepository;
+    public static OrderRepository orderRepository;
+    public static CargoBookingRepository cargoBookingRepository;
 }
